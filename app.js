@@ -11,14 +11,194 @@ const depthFirstPrint = (graph, source) => {
   }
 };
 
-//recursive
-
 const depthFirstPrinteRecursive = (graph, source) => {
   console.log(source);
 
   for (let neighbour of graph[source]) {
     depthFirstPrint(graph, neighbour);
   }
+};
+
+const breathFirstPrintx = (graph, source) => {
+  let queue = [source];
+
+  while (queue.length > 0) {
+    let current = queue.shift();
+    for (let neighbour of graph[current]) {
+      queue.push(neighbour);
+    }
+  }
+};
+
+const graph = {
+  a: ["c", "b"],
+  b: ["d"],
+  c: ["e"],
+  d: ["f"],
+  e: [],
+  f: [],
+};
+
+// depthFirstPrint(graph, "a");
+// depthFirstPrinteRecursive(graph, "a");
+
+// breathFirstPrint(graph, "a");
+// console.log(hasPath(graph, "a", "f"));
+
+//recursive
+
+var createGraph = (egdes) => {
+  let graph = {};
+
+  for (let egde of egdes) {
+    const [a, b] = egde;
+    if (!(a in graph)) graph[a] = [];
+    if (!(b in graph)) graph[b] = [];
+    graph[a].push(b);
+    graph[b].push(a);
+  }
+
+  return graph;
+};
+
+var connectedComponentCountx = (graph) => {
+  let visited = new Set();
+  let count = 0;
+
+  for (let node in graph) {
+    if (exploreGraphx(graph, node, visited) === true) count++;
+  }
+
+  return count;
+};
+
+var exploreGraphx = (graph, current, visited) => {
+  if (visited.has(toString(current))) return false;
+  visited.add(toString(current));
+
+  let count = 0;
+
+  for (let neighbour of graph[current]) {
+    exploreGraphx(graph, neighbour, visited);
+  }
+
+  return true;
+};
+
+var maxComponentCountx = (graph) => {
+  let visited = new Set();
+  let maxCount = 0;
+  let count = 0;
+
+  for (let node in graph) {
+    let [val, num] = exploreGraphx(graph, node, visited, count);
+    if (val === true) {
+      maxCount = Math.max(num, maxCount);
+      count = 0;
+    }
+  }
+
+  return maxCount;
+};
+
+var exploreMaxGraphx = (graph, current, visited, count) => {
+  if (visited.has(toString(current))) return false;
+  visited.add(toString(current));
+
+  count++;
+
+  for (let neighbour of graph[current]) {
+    exploreGraphx(graph, neighbour, visited, count);
+  }
+
+  return [true, count];
+};
+
+const graphValues = {
+  0: [8, 1, 5],
+  1: [0],
+  5: [0, 8],
+  8: [0, 5],
+  2: [3, 4],
+  3: [2, 4],
+  4: [3, 2],
+};
+
+console.log(connectedComponentCountx(graphValues));
+
+var validPath = function (n, edges, source, destination) {
+  let stack = [source];
+  let graph = createGraph(edges);
+  let set = new Set();
+
+  while (stack.length > 0) {
+    let current = stack.pop();
+    if (current === destination) return true;
+
+    for (let neighbour of graph[current]) {
+      if (set.has(neighbour)) continue;
+      else {
+        stack.push(neighbour);
+        set.add(neighbour);
+      }
+    }
+  }
+
+  return false;
+};
+
+let valiPathRecursion = (graph, src, des, visited) => {
+  if (src === des) return true;
+  if (visited.has(src)) return false;
+
+  for (let neighbour of graph[src]) {
+    if (valiPathRecursion(graph, neighbour, des, visited) === true) return true;
+  }
+
+  return false;
+};
+
+let n = 3;
+let edgesx = [
+  [0, 1],
+  [1, 2],
+  [2, 0],
+];
+let source = 0;
+let destination = 2;
+
+// console.log(validPath(n, edgesx, source, destination));
+
+const haspathx = (adjList, src, des) => {
+  let stack = [src];
+
+  while (stack > 0) {
+    let current = stack.pop();
+
+    if (current === des) return true;
+
+    for (let neighbour of adjList[current]) {
+      stack.push(neighbour);
+    }
+  }
+
+  return false;
+};
+
+const haspathVisited = (adjList, src, des) => {
+  let stack = [[src, 1]];
+
+  while (stack > 0) {
+    let current = stack.pop();
+
+    if (current === des) return true;
+
+    for (let neighbour of adjList[current]) {
+      stack.push(neighbour);
+    }
+  }
+
+  return false;
 };
 
 const breathFirstPrint = (graph, source) => {
@@ -67,21 +247,6 @@ const hasPath = (graph, src, dst) => {
 
   return false;
 };
-
-const graph = {
-  a: ["c", "b"],
-  b: ["d"],
-  c: ["e"],
-  d: ["f"],
-  e: [],
-  f: [],
-};
-
-// depthFirstPrint(graph, "a");
-// depthFirstPrinteRecursive(graph, "a");
-
-// breathFirstPrint(graph, "a");
-// console.log(hasPath(graph, "a", "f"));
 
 //undirected graph
 const edges = [
@@ -165,16 +330,6 @@ const connectedComponentCount = (graph) => {
   }
 
   return count;
-};
-
-const graphValues = {
-  0: [8, 1, 5],
-  1: [0],
-  5: [0, 8],
-  8: [0, 5],
-  2: [3, 4],
-  3: [2, 4],
-  4: [3, 2],
 };
 
 // largest component
@@ -296,4 +451,4 @@ const numberOfIsland = (grid) => {
   return count;
 };
 
-console.log(numberOfIsland(grid));
+// console.log(numberOfIsland(grid));
